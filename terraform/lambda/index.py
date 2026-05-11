@@ -1,5 +1,7 @@
 import json
 import os
+from decimal import Decimal
+
 import boto3
 
 dynamodb = boto3.resource("dynamodb")
@@ -19,7 +21,7 @@ def handler(event, context):
         return _respond(200, item)
 
     if method == "POST":
-        body = json.loads(event.get("body") or "{}")
+        body = json.loads(event.get("body") or "{}", parse_float=Decimal)
         if "id" not in body:
             return _respond(400, {"error": "id required"})
         table.put_item(Item=body)
